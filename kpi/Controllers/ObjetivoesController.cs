@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using kpi.Models;
+using kpi.Services.Objetivos;
+using kpi.Dtos.Objetivos;
 
 namespace kpi.Controllers
 {
@@ -14,17 +16,19 @@ namespace kpi.Controllers
     public class ObjetivoesController : ControllerBase
     {
         private readonly kpiContext _context;
+        private readonly ObjetivosServices _objetivosServices;
 
-        public ObjetivoesController(kpiContext context)
+        public ObjetivoesController(kpiContext context, ObjetivosServices objetivosServices)
         {
             _context = context;
+            _objetivosServices = objetivosServices;
         }
 
         // GET: api/Objetivoes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Objetivo>>> GetObjetivo()
+        public async Task<ActionResult<List<Objetivo>>> GetObjetivo()
         {
-            return await _context.Objetivo.ToListAsync();
+            return await _objetivosServices.GetObjetivos();
         }
 
         // GET: api/Objetivoes/5

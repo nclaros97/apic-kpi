@@ -1,4 +1,5 @@
 using kpi.Models;
+using kpi.Services.Objetivos;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,9 +28,11 @@ namespace kpi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             services.AddDbContext<kpiContext>(options => options.UseMySQL(Configuration.GetConnectionString("kpis")));
-
+            services.AddScoped<ObjetivosServices, ObjetivosServices>();
             services.AddCors(options =>
                 options.AddDefaultPolicy(builder =>
                 {
