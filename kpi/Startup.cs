@@ -1,4 +1,5 @@
 using kpi.Models;
+using kpi.Services.Agencias;
 using kpi.Services.Objetivos;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,7 @@ namespace kpi
             );
             services.AddDbContext<kpiContext>(options => options.UseMySQL(Configuration.GetConnectionString("kpis")));
             services.AddScoped<ObjetivosServices, ObjetivosServices>();
+            services.AddScoped<AgenciasServices, AgenciasServices>();
             services.AddCors(options =>
                 options.AddDefaultPolicy(builder =>
                 {

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using kpi.Models;
+using kpi.Services.Agencias;
+using kpi.Dtos.Agencias;
 
 namespace kpi.Controllers
 {
@@ -14,17 +16,20 @@ namespace kpi.Controllers
     public class AgenciasController : ControllerBase
     {
         private readonly kpiContext _context;
+        private readonly AgenciasServices _agenciasServices;
 
-        public AgenciasController(kpiContext context)
+        public AgenciasController(kpiContext context, AgenciasServices agenciasServices)
         {
             _context = context;
+            _agenciasServices = agenciasServices;
         }
 
         // GET: api/Agencias
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Agencia>>> GetAgencia()
+        public ActionResult<IEnumerable<AgenciaDto>> GetAgencia()
         {
-            return await _context.Agencia.ToListAsync();
+            
+            return _agenciasServices.GetAgencias();
         }
 
         // GET: api/Agencias/5
