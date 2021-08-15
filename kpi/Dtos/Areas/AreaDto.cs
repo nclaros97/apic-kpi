@@ -9,6 +9,5 @@ namespace kpi.Dtos.Areas
     {
         public int IdArea { get; set; }
         public string NombreArea { get; set; }
-        public int IdAreaAgencia { get; set; }
     }
 }

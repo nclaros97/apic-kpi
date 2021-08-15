@@ -8,9 +8,9 @@ namespace kpi.Dtos.Objetivos
 {
     public class ObjetivosDto
     {
-        public int idObjetivo { get; set; }
-        public string nombreObjetivo {get;set;}
-        public float porcentajeObjetivo { get; set; }
-        public List<Subobjetivos> SubObjetivo { get; set; }
+        public int IdObjetivo { get; set; }
+        public string NombreObjetivo {get;set;}
+        public float PorcentajeObjetivo { get; set; }
+        public List<SubObjetivoDto> SubObjetivosDto { get; set; }
     }
 }

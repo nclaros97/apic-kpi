@@ -10,6 +10,6 @@ namespace kpi.Dtos.Agencias
     {
         public int IdAgencia { get; set; }
         public string NombreAgencia { get; set; }
-        public List<AreaDto> Areas { get; set; }
+        public List<AreaAgenciaDto> AreaAgenciaDtos { get; set; }
     }
 }

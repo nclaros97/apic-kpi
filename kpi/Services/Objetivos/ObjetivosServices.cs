@@ -1,4 +1,5 @@
-﻿using kpi.Dtos.Objetivos;
+﻿using kpi.Dtos.Areas;
+using kpi.Dtos.Objetivos;
 using kpi.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -15,10 +16,34 @@ namespace kpi.Services.Objetivos
             _context = context;
         }
 
-        public async Task<List<Objetivo>> GetObjetivos()
+        public async Task<List<ObjetivosDto>> GetObjetivos()
         {
-            var objetivos = _context.Objetivo.Include(x => x.Subobjetivos).ThenInclude( x => x.IdAreaNavigation).ToListAsync();
-            return await objetivos;
+            var objetivosDb = await _context.Objetivo.ToListAsync();
+
+            var objetivos = (from ob in objetivosDb
+                             select new ObjetivosDto
+                             {
+                                 IdObjetivo = ob.IdObjetivo,
+                                 NombreObjetivo = ob.NombreObjetivo,
+                                 PorcentajeObjetivo = ob.PorcentajeObjetivo,
+                                 SubObjetivosDto = (from subOb in _context.Subobjetivos
+                                                    where subOb.IdObjetivo == ob.IdObjetivo
+                                                    select new SubObjetivoDto
+                                                    {
+                                                        IdArea = subOb.IdArea,
+                                                        IdObjetivo = subOb.IdObjetivo,
+                                                        AreaDto = (from a in _context.Area
+                                                                   where a.IdArea == subOb.IdArea 
+                                                                   select new AreaDto { 
+                                                                       IdArea = a.IdArea,
+                                                                       NombreArea = a.NombreArea
+                                                                   }).FirstOrDefault(),
+                                                        IdSubobjetivos = subOb.IdSubobjetivos,
+                                                        NombreSubobjetivo = subOb.NombreSubobjetivo,
+                                                        SubObjetivo = subOb.SubObjetivo
+                                                    }).ToList()
+                             }).ToList();
+            return  objetivos;
         }
 
     }

@@ -26,7 +26,7 @@ namespace kpi.Controllers
 
         // GET: api/Objetivoes
         [HttpGet]
-        public async Task<ActionResult<List<Objetivo>>> GetObjetivo()
+        public async Task<ActionResult<List<ObjetivosDto>>> GetObjetivo()
         {
             return await _objetivosServices.GetObjetivos();
         }

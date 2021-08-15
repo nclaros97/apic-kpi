@@ -1,5 +1,7 @@
-﻿using kpi.Dtos.Agencias;
+﻿using kpi.Dtos;
+using kpi.Dtos.Agencias;
 using kpi.Dtos.Areas;
+using kpi.Dtos.Indicadores;
 using kpi.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,14 +27,33 @@ namespace kpi.Services.Agencias
                                {
                                    IdAgencia = a.IdAgencia,
                                    NombreAgencia = a.NombreAgencia,
-                                   Areas = (from ag in _context.AreaAgencia.ToList() 
-                                            where ag.IdAgencia == a.IdAgencia
-                                            select new AreaDto 
-                                            { 
-                                                IdArea = (from a in _context.Area.ToList().Where(x=>x.IdArea == ag.IdArea) select a.IdArea).FirstOrDefault(),
-                                                NombreArea = (from a in _context.Area.ToList().Where(x => x.IdArea == ag.IdArea) select a.NombreArea).FirstOrDefault(),
-                                                IdAreaAgencia = ag.IdAreaAgencia
-                                            }).ToList()    
+                                   AreaAgenciaDtos = (from ag in _context.AreaAgencia.ToList()
+                                                      where ag.IdAgencia == a.IdAgencia
+                                                      select new AreaAgenciaDto
+                                                      {
+                                                          IdArea = ag.IdArea,
+                                                          IdAreaAgencia = ag.IdAreaAgencia,
+                                                          IdCodigoIndiador = ag.IdCodigoIndiador,
+                                                          IdAgencia = ag.IdAgencia,
+                                                          IndicadorDto = (from i in _context.Indicadores.Where(x => x.IdCodigoIndiador == ag.IdCodigoIndiador)
+                                                                          select new IndicadorDto {
+                                                                              Detalle = i.Detalle,
+                                                                              Estado = i.Estado,
+                                                                              IdCodigoIndiador = i.IdCodigoIndiador,
+                                                                              Formula = i.Formula,
+                                                                              IdSubobjetivos = i.IdSubobjetivos,
+                                                                              IdTiempo = i.IdTiempo,
+                                                                              NombreIndicador = i.NombreIndicador,
+                                                                              Proceso = i.Proceso,
+                                                                              Responsables = i.Responsables
+                                                                          }).FirstOrDefault(),
+                                                          AreaDto = (from a in _context.Area.Where(x => x.IdArea == ag.IdArea)
+                                                                     select new AreaDto
+                                                                     {
+                                                                         IdArea = a.IdArea,
+                                                                         NombreArea = a.NombreArea
+                                                                     }).FirstOrDefault()
+                                                      }).ToList()
                                }).ToList();
 
 
