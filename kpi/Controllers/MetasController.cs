@@ -86,10 +86,10 @@ namespace kpi.Controllers
         }
 
         // DELETE: api/Metas/5
-        [HttpDelete("delete/{id}")]
-        public async Task<ActionResult<Meta>> DeleteMeta(int id)
+        [HttpDelete("delete")]
+        public async Task<ActionResult<Meta>> DeleteMeta(Meta meta1)
         {
-            var meta = await _context.Meta.FindAsync(id);
+            var meta = await _context.Meta.Where(x=>x.IdCodigoIndiador == meta1.IdCodigoIndiador && x.IdAreaAgencia == meta1.IdAreaAgencia).FirstOrDefaultAsync();
             if (meta == null)
             {
                 return NotFound();

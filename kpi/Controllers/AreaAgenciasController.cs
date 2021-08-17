@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using kpi.Models;
+using kpi.Dtos;
+using kpi.Dtos.Areas;
+using kpi.Dtos.Agencias;
 
 namespace kpi.Controllers
 {
@@ -25,6 +28,38 @@ namespace kpi.Controllers
         public async Task<ActionResult<IEnumerable<AreaAgencia>>> GetAreaAgencia()
         {
             return await _context.AreaAgencia.ToListAsync();
+        }
+
+        // GET: api/AreaAgencias/selectBox
+        [HttpGet("selectBox")]
+        public async Task<ActionResult<IEnumerable<AreaAgenciaDto>>> GetAreaAgenciaSelectBox()
+        {
+            var areaAgenciasDb = await _context.AreaAgencia.ToListAsync();
+            var areasAgencias = (from x in areaAgenciasDb.ToList()
+                                 where x.IdAreaAgencia == x.IdAreaAgencia
+                                 select new AreaAgenciaDto
+                                 {
+                                     IdAgencia = x.IdAgencia,
+                                     IdAreaAgencia = x.IdAreaAgencia,
+                                     IdArea = x.IdArea,
+                                     IdCodigoIndiador = x.IdCodigoIndiador,
+                                     AgenciaDto = (from a in _context.Agencia.ToList()
+                                                   where a.IdAgencia == x.IdAgencia
+                                                   select new AgenciaDto
+                                                   {
+                                                       IdAgencia = a.IdAgencia,
+                                                       NombreAgencia = a.NombreAgencia
+                                                   }).FirstOrDefault(),
+                                     AreaDto = (from a in _context.Area.ToList()
+                                                where a.IdArea == x.IdArea
+                                                select new AreaDto
+                                                {
+                                                    IdArea = a.IdArea,
+                                                    NombreArea = a.NombreArea
+                                                }).FirstOrDefault()
+                                 }).ToList();
+
+            return areasAgencias;
         }
 
         // GET: api/AreaAgencias/5

@@ -6,6 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using kpi.Models;
+using kpi.Dtos.Indicadores;
+using kpi.Dtos.Objetivos;
+using kpi.Dtos.Areas;
+using kpi.Dtos;
+using kpi.Dtos.Agencias;
+using kpi.Dtos.Tiempos;
 
 namespace kpi.Controllers
 {
@@ -22,9 +28,81 @@ namespace kpi.Controllers
 
         // GET: api/Indicadores
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Indicadores>>> GetIndicadores()
+        public async Task<ActionResult<IEnumerable<IndicadorDto>>> GetIndicadores()
         {
-            return await _context.Indicadores.ToListAsync();
+            var indicadoresDb = await _context.Indicadores.ToListAsync();
+            var indicadores = (from i in indicadoresDb.ToList()
+                               select new IndicadorDto
+                               {
+                                   Detalle = i.Detalle,
+                                   Estado = i.Estado,
+                                   Formula = i.Formula,
+                                   IdCodigoIndiador = i.IdCodigoIndiador,
+                                   IdSubobjetivos = i.IdSubobjetivos,
+                                   SubObjetivoDto = (from so in _context.Subobjetivos.ToList()
+                                                     where so.IdSubobjetivos == i.IdSubobjetivos
+                                                     select new SubObjetivoDto {
+                                                         AreaDto = (from a in _context.Area.ToList()
+                                                                    where a.IdArea == so.IdArea
+                                                                    select new AreaDto {
+                                                                        IdArea = a.IdArea,
+                                                                        NombreArea = a.NombreArea
+                                                                    }).FirstOrDefault(),
+                                                         IdArea = so.IdArea,
+                                                         IdObjetivo = so.IdObjetivo,
+                                                         IdSubobjetivos = so.IdSubobjetivos,
+                                                         NombreSubobjetivo = so.NombreSubobjetivo,
+                                                         SubObjetivo = so.SubObjetivo
+                                                     }).FirstOrDefault(),
+                                   IdTiempo = i.IdTiempo,
+                                   TiempoDto = (from t in _context.Tiempo.ToList()
+                                                where t.IdTiempo == i.IdTiempo
+                                                select new TiempoDto {
+                                                    IdTiempo = t.IdTiempo,
+                                                    NombrePeriodo = t.NombrePeriodo
+                                                }).FirstOrDefault(),
+                                   MetaDto = (from m in _context.Meta.ToList()
+                                              where m.IdCodigoIndiador == i.IdCodigoIndiador
+                                              select new MetaDto {
+                                                  IdAreaAgencia = m.IdAreaAgencia,
+                                                  IdCodigoIndiador = m.IdCodigoIndiador,
+                                                  AreaAgenciaDto = (from x in _context.AreaAgencia.ToList()
+                                                                    where x.IdAreaAgencia == x.IdAreaAgencia
+                                                                    select new AreaAgenciaDto {
+                                                                        IdAgencia = x.IdAgencia,
+                                                                        IdAreaAgencia = x.IdAreaAgencia,
+                                                                        IdArea = x.IdArea,
+                                                                        IdCodigoIndiador = x.IdCodigoIndiador,
+                                                                        AgenciaDto = (from a in _context.Agencia.ToList()
+                                                                                      where a.IdAgencia == x.IdAgencia
+                                                                                      select new AgenciaDto {
+                                                                                          IdAgencia = a.IdAgencia,
+                                                                                          NombreAgencia = a.NombreAgencia
+                                                                                      }).FirstOrDefault(),
+                                                                        AreaDto = (from a in _context.Area.ToList()
+                                                                                   where a.IdArea == x.IdArea
+                                                                                   select new AreaDto
+                                                                                   {
+                                                                                       IdArea = a.IdArea,
+                                                                                       NombreArea = a.NombreArea
+                                                                                   }).FirstOrDefault()
+                                                                    }).FirstOrDefault(),
+                                                  LogradoDto = (from l in _context.Logrado.ToList()
+                                                                where l.IdCodigoIndiador == i.IdCodigoIndiador
+                                                                select new LogradoDto {
+                                                                    Meta = l.Meta,
+                                                                    IdCodigoIndiador = l.IdCodigoIndiador,
+                                                                    IdAreaAgencia = l.IdAreaAgencia,
+                                                                    Logrado1 = l.Logrado1,
+                                                                    Observacion = l.Observacion,
+                                                                    PorcentajeCumplimiento = l.PorcentajeCumplimiento
+                                                                }).FirstOrDefault()
+                                              }).ToList(),
+                                   NombreIndicador = i.NombreIndicador,
+                                   Proceso = i.Proceso,
+                                   Responsables = i.Responsables
+                               }).ToList();
+            return indicadores;
         }
 
         // GET: api/Indicadores/5
