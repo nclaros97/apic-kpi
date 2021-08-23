@@ -18,7 +18,7 @@ namespace kpi.Dtos.Indicadores
         public int IdTiempo { get; set; }
         public string Estado { get; set; }
         public string Responsables { get; set; }
-        public List<MetaDto> MetaDto { get; set; }
+        public MetaDto MetaDto { get; set; }
         public SubObjetivoDto SubObjetivoDto { get; set; }
         public TiempoDto TiempoDto { get; set; }
     }

@@ -50,6 +50,13 @@ namespace kpi.Controllers
                                                                     }).FirstOrDefault(),
                                                          IdArea = so.IdArea,
                                                          IdObjetivo = so.IdObjetivo,
+                                                         ObjetivosDto = (from o in _context.Objetivo.ToList()
+                                                                         where o.IdObjetivo == so.IdObjetivo
+                                                                         select new ObjetivosDto { 
+                                                                             IdObjetivo = o.IdObjetivo,
+                                                                             NombreObjetivo = o.NombreObjetivo,
+                                                                             PorcentajeObjetivo = o.PorcentajeObjetivo
+                                                                         }).FirstOrDefault(),
                                                          IdSubobjetivos = so.IdSubobjetivos,
                                                          NombreSubobjetivo = so.NombreSubobjetivo,
                                                          SubObjetivo = so.SubObjetivo
@@ -97,7 +104,7 @@ namespace kpi.Controllers
                                                                     Observacion = l.Observacion,
                                                                     PorcentajeCumplimiento = l.PorcentajeCumplimiento
                                                                 }).FirstOrDefault()
-                                              }).ToList(),
+                                              }).FirstOrDefault(),
                                    NombreIndicador = i.NombreIndicador,
                                    Proceso = i.Proceso,
                                    Responsables = i.Responsables

@@ -12,6 +12,7 @@ namespace kpi.Dtos.Objetivos
         public string NombreSubobjetivo { get; set; }
         public int IdArea { get; set; }
         public int IdObjetivo { get; set; }
+        public ObjetivosDto ObjetivosDto { get; set; }
         public string SubObjetivo { get; set; }
         public AreaDto AreaDto { get; set; }
     }
