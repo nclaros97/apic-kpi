@@ -30,7 +30,7 @@ namespace kpi.Models
         public virtual DbSet<SubojetivoArea> SubojetivoArea { get; set; }
         public virtual DbSet<Tiempo> Tiempo { get; set; }
         public virtual DbSet<Usuario> Usuario { get; set; }
-
+        public virtual DbSet<Tokens> Tokens { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Agencia>(entity =>
@@ -417,6 +417,45 @@ namespace kpi.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Idarea");
             });
+
+            modelBuilder.Entity<Tokens>(entity =>
+            {
+                entity.HasKey(e => e.RefreshTokenId)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("tokens");
+
+                entity.HasIndex(e => e.IdUsuario)
+                    .HasName("Id_Usuario");
+
+                entity.Property(e => e.RefreshTokenId).HasColumnType("int(11)");
+
+                entity.Property(e => e.CreationDate)
+                    .HasColumnType("date")
+                    .HasDefaultValueSql("'NULL'");
+
+                entity.Property(e => e.ExpiryDate)
+                    .HasColumnType("date")
+                    .HasDefaultValueSql("'NULL'");
+
+                entity.Property(e => e.IdUsuario)
+                    .HasColumnName("Id_Usuario")
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("'NULL'");
+
+                entity.Property(e => e.JwtId)
+                    .HasMaxLength(500)
+                    .HasDefaultValueSql("'NULL'");
+
+                entity.Property(e => e.Token)
+                    .IsRequired()
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Used)
+                    .HasColumnType("bit(1)")
+                    .HasDefaultValueSql("'NULL'");
+            });
+
 
             OnModelCreatingPartial(modelBuilder);
         }

@@ -86,10 +86,10 @@ namespace kpi.Controllers
         }
 
         // DELETE: api/Logrados/5
-        [HttpDelete("delete/{id}")]
-        public async Task<ActionResult<Logrado>> DeleteLogrado(int id)
+        [HttpDelete("delete")]
+        public async Task<ActionResult<Logrado>> DeleteLogrado(Logrado dataLogrado)
         {
-            var logrado = await _context.Logrado.FindAsync(id);
+            var logrado = await _context.Logrado.Where(x => x.IdAreaAgencia == dataLogrado.IdAreaAgencia && x.IdCodigoIndiador == dataLogrado.IdCodigoIndiador).FirstOrDefaultAsync();
             if (logrado == null)
             {
                 return NotFound();
