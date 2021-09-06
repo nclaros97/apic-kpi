@@ -103,11 +103,11 @@ namespace kpi.Services.IdentityService
 
                 ClaimsIdentity Subject = new ClaimsIdentity(new Claim[]
                     {
-                    new Claim("UserId", user.IdUsuario.ToString()),
+                    new Claim("userId", user.IdUsuario.ToString()),
                     new Claim("email",user.Email==null?"":user.Email),
-                    new Claim("AgenciaId",user.IdAgencia.ToString()),
-                    new Claim("AreaId",user.IdArea.ToString()),
-                    new Claim("Tipo",user.UsuarioTipo),
+                    new Claim("agenciaId",user.IdAgencia.ToString()),
+                    new Claim("areaId",user.IdArea.ToString()),
+                    new Claim("tipo",user.UsuarioTipo),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     });
                 //foreach (var item in GetUserRole(user.UserId))
