@@ -35,7 +35,7 @@ namespace kpi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Usuario>> GetUsuario(int id)
         {
-            var usuario = await _context.Usuario.FindAsync(id);
+            var usuario = await _context.Usuario.Include(x=>x.IdAgenciaNavigation).Include(x=>x.IdAreaNavigation).Where(x=>x.IdUsuario == id).FirstOrDefaultAsync();
 
             if (usuario == null)
             {
@@ -48,7 +48,7 @@ namespace kpi.Controllers
         // PUT: api/Usuarios/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
+        [HttpPut("edit/{id}")]
         public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
         {
             if (id != usuario.IdUsuario)
@@ -80,7 +80,7 @@ namespace kpi.Controllers
         // POST: api/Usuarios
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
+        [HttpPost("add")]
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
             _context.Usuario.Add(usuario);
@@ -105,10 +105,18 @@ namespace kpi.Controllers
         }
 
         // DELETE: api/Usuarios/5
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<ActionResult<Usuario>> DeleteUsuario(int id)
         {
             var usuario = await _context.Usuario.FindAsync(id);
+
+            var tokens = await _context.Tokens.Where(x => x.IdUsuario == id).ToListAsync();
+
+            tokens.ForEach(token => {
+                _context.Tokens.Remove(token);
+                 _context.SaveChangesAsync();
+            });
+
             if (usuario == null)
             {
                 return NotFound();
