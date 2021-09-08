@@ -47,7 +47,7 @@ namespace kpi.Services.IdentityService
                 if (loginUser == null)
                 {
                     response.IsSuccess = false;
-                    response.Message = "Invalid Username And Password";
+                    response.Message = "Usuario ó contraseña inválidos";
                     return response;
                 }
 
@@ -59,7 +59,7 @@ namespace kpi.Services.IdentityService
                 }
                 else
                 {
-                    response.Message = "Something went wrong!";
+                    response.Message = "Ocurrio un error!";
                     response.IsSuccess = false;
 
                 }
