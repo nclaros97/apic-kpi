@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using kpi.Models;
+using kpi.Dtos.Indicadores;
+using kpi.Dtos;
+using kpi.Dtos.Agencias;
+using kpi.Dtos.Areas;
 
 namespace kpi.Controllers
 {
@@ -83,6 +87,53 @@ namespace kpi.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetLogrado", new { id = logrado.IdCodigoIndiador }, logrado);
+        }
+
+        [HttpGet("metaLogrado/indicador/{indicadorId}")]
+        public ActionResult<MetaDto> GetMetaLogrado(int indicadorId)
+        {
+            var metalogrado = (from m in _context.Meta.ToList()
+                               where m.IdCodigoIndiador == indicadorId
+                               select new MetaDto
+                               {
+                                   IdAreaAgencia = m.IdAreaAgencia,
+                                   IdCodigoIndiador = m.IdCodigoIndiador,
+                                   AreaAgenciaDto = (from x in _context.AreaAgencia.ToList()
+                                                     where x.IdAreaAgencia == m.IdAreaAgencia
+                                                     select new AreaAgenciaDto
+                                                     {
+                                                         IdAgencia = x.IdAgencia,
+                                                         IdAreaAgencia = x.IdAreaAgencia,
+                                                         IdArea = x.IdArea,
+                                                         IdCodigoIndiador = x.IdCodigoIndiador,
+                                                         AgenciaDto = (from a in _context.Agencia.ToList()
+                                                                       where a.IdAgencia == x.IdAgencia
+                                                                       select new AgenciaDto
+                                                                       {
+                                                                           IdAgencia = a.IdAgencia,
+                                                                           NombreAgencia = a.NombreAgencia
+                                                                       }).FirstOrDefault(),
+                                                         AreaDto = (from a in _context.Area.ToList()
+                                                                    where a.IdArea == x.IdArea
+                                                                    select new AreaDto
+                                                                    {
+                                                                        IdArea = a.IdArea,
+                                                                        NombreArea = a.NombreArea
+                                                                    }).FirstOrDefault()
+                                                     }).FirstOrDefault(),
+                                   LogradoDto = (from l in _context.Logrado.ToList()
+                                                 where l.IdCodigoIndiador == indicadorId
+                                                 select new LogradoDto
+                                                 {
+                                                     Meta = l.Meta,
+                                                     IdCodigoIndiador = l.IdCodigoIndiador,
+                                                     IdAreaAgencia = l.IdAreaAgencia,
+                                                     Logrado1 = l.Logrado1,
+                                                     Observacion = l.Observacion,
+                                                     PorcentajeCumplimiento = l.PorcentajeCumplimiento
+                                                 }).FirstOrDefault()
+                               }).FirstOrDefault();
+            return metalogrado;
         }
 
         // DELETE: api/Logrados/5
