@@ -15,6 +15,8 @@ namespace kpi.Models
         public int IdArea { get; set; }
         public string UsuarioTipo { get; set; }
         public int IdAgencia { get; set; }
+        public bool NuevoPassword { get; set; }
+        public DateTime FechaNuevoPassword { get; set; }
 
         public virtual Agencia IdAgenciaNavigation { get; set; }
         public virtual Area IdAreaNavigation { get; set; }

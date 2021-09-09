@@ -405,6 +405,12 @@ namespace kpi.Models
                     .HasColumnName("Usuario_Tipo")
                     .HasMaxLength(45);
 
+                entity.Property(e => e.NuevoPassword)
+                    .HasColumnType("bit");
+
+                entity.Property(e => e.FechaNuevoPassword)
+                    .HasColumnType("date");
+
                 entity.HasOne(d => d.IdAgenciaNavigation)
                     .WithMany(p => p.Usuario)
                     .HasForeignKey(d => d.IdAgencia)
